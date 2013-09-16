@@ -2194,6 +2194,36 @@
                               (fo/-FS fl/-top fl/-bot) ;assoc never returns nil
                               obj/-empty))))))
 
+(defn hmap-remove-key
+  [hmap k]
+  {:pre [(c/keyword-value? k)
+         (r/HeterogeneousMap? hmap)]}
+  (if (:other-keys? hmap)
+    (-> (update-in hmap [:types] dissoc k)
+        (update-in [:absent-keys] conj k))
+    (update-in hmap [:types] dissoc k)))
+
+(add-invoke-special-method 'clojure.core/dissoc
+  [{:keys [fexpr args] :as expr} & [expected]]
+  {:post [(or (= % :default) (-> % expr-type TCResult?))]}
+  (let [[ctarget & cargs :as all-cargs] (map check args)
+        ttarget (-> ctarget expr-type ret-t c/fully-resolve-type)
+        targs (map (comp ret-t expr-type) cargs)
+        is-kw-args (every? c/keyword-value? targs)]
+    (cond
+     (r/Nil? ttarget)
+       (assoc expr expr-type (ret r/-nil))
+     (and (r/HeterogeneousMap? ttarget) is-kw-args)
+       (assoc expr expr-type (ret (reduce hmap-remove-key ttarget targs)))
+     (and (r/Union? ttarget) (every? r/HeterogeneousMap? (:types ttarget)) is-kw-args)
+       (assoc expr expr-type (ret
+         (apply c/Un
+           (map #(reduce hmap-remove-key % targs)
+                 (:types ttarget)))))
+     :else
+       (normal-invoke expr fexpr args expected
+                           :cargs all-cargs)
+     )))
 
 ;conj
 (add-invoke-special-method 'clojure.core/conj

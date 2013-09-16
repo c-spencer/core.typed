@@ -2006,6 +2006,30 @@
         (check-ns 'clojure.core.typed.test.fail.CTYP-37))))
 
 
+(deftest hmap-dissoc-test
+  ; complete dissocs
+  (is-cf (dissoc {} :a)
+         (HMap :mandatory {} :complete? true))
+  (is-cf (dissoc {:a 6} :a)
+         (HMap :mandatory {} :complete? true))
+  (is-cf (dissoc {:a 6 :b 7} :a)
+         (HMap :mandatory {:b (Value 7)} :complete? true))
+  (is-cf (dissoc {:a 6 :b 7} :a :b)
+         (HMap :mandatory {} :complete? true))
+  (is-cf (dissoc {:a 6 :b 7 :c 8} :a :b)
+         (HMap :mandatory {:c (Value 8)} :complete? true))
+  ; incomplete dissocs
+  (is-cf (dissoc (clojure.core.typed/ann-form {} (HMap)) :a)
+         (HMap :absent-keys #{:a}))
+  (is-cf (dissoc (clojure.core.typed/ann-form {} (HMap :optional {:a String})) :a)
+         (HMap :absent-keys #{:a}))
+  (is-cf (dissoc (clojure.core.typed/ann-form {} (HMap :optional {:a String})) :b)
+         (HMap :optional {:a String} :absent-keys #{:b}))
+  (is-cf (dissoc (clojure.core.typed/ann-form {:b 7} (HMap :mandatory {:b (Value 7)} :optional {:a String})) :a)
+         (HMap :mandatory {:b (Value 7)} :absent-keys #{:a}))
+  (is-cf (dissoc (clojure.core.typed/ann-form {:b 7} (HMap :optional {:a String :c String})) :a :b)
+         (HMap :optional {:c String} :absent-keys #{:a :b})))
+
 ;(reset-caches)
 
 ;(chk/abstract-result
