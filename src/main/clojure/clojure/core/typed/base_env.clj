@@ -1240,28 +1240,50 @@ clojure.core/ns-resolve (Fn [(U Symbol Namespace) Symbol -> (U (Var Any) Class n
 
 clojure.core/extenders [Any -> (U nil (Seqable (U Class nil)))]
 
-clojure.core/+ (Fn [AnyInteger * -> AnyInteger]
-                        [Number * -> Number])
-clojure.core/- (Fn [AnyInteger AnyInteger * -> AnyInteger]
+clojure.core/+ (Fn [-> (Value 0)]
+                   [Long * -> Long]
+                   [AnyInteger * -> AnyInteger]
+                   [(U Double AnyInteger) * -> Double]
+                   [Number * -> Number])
+clojure.core/- (Fn [Long Long * -> Long]
+                   [AnyInteger AnyInteger * -> AnyInteger]
+                   [(U Double AnyInteger) (U Double AnyInteger) * -> Double]
                    [Number Number * -> Number])
-clojure.core/* (Fn [AnyInteger * -> AnyInteger]
-                        [Number * -> Number])
+clojure.core/* (Fn [-> (Value 1)]
+                   [Long * -> Long]
+                   [AnyInteger * -> AnyInteger]
+                   [(U Double AnyInteger) * -> Double]
+                   [Number * -> Number])
 clojure.core// [Number Number * -> Number]
 
-clojure.core/+' (Fn [AnyInteger * -> AnyInteger]
+clojure.core/+' (Fn [-> (Value 0)]
+                    [AnyInteger * -> AnyInteger]
+                    [(U Double AnyInteger) * -> Double]
                     [Number * -> Number])
 clojure.core/-' (Fn [AnyInteger AnyInteger * -> AnyInteger]
+                    [(U Double AnyInteger) (U Double AnyInteger) * -> Double]
                     [Number Number * -> Number])
-clojure.core/*' (Fn [AnyInteger * -> AnyInteger]
+clojure.core/*' (Fn [-> (Value 1)]
+                    [AnyInteger * -> AnyInteger]
+                    [(U Double AnyInteger) * -> Double]
                     [Number * -> Number])
 
-clojure.core/inc (Fn [AnyInteger -> AnyInteger]
-                          [Number -> Number])
-clojure.core/dec (Fn [AnyInteger -> AnyInteger]
-                          [Number -> Number])
+clojure.core/inc (Fn [Long -> Long]
+                     [AnyInteger -> AnyInteger]
+                     [(U Double AnyInteger) -> Double]
+                     [Number -> Number])
+clojure.core/dec (Fn [Long -> Long]
+                     [AnyInteger -> AnyInteger]
+                     [(U Double AnyInteger) -> Double]
+                     [Number -> Number])
 
 clojure.core/inc' (Fn [AnyInteger -> AnyInteger]
-                          [Number -> Number])
+                      [(U Double AnyInteger) -> Double]
+                      [Number -> Number])
+clojure.core/dec' (Fn [AnyInteger -> AnyInteger]
+                      [(U Double AnyInteger) -> Double]
+                      [Number -> Number])
+
 
 clojure.core/even? [AnyInteger -> boolean]
 clojure.core/odd? [AnyInteger -> boolean]
@@ -1580,19 +1602,48 @@ clojure.lang.RT/get (All [x y]
                            [String Any y -> (U y Character)]))
 
 ;numbers
-clojure.lang.Numbers/add (Fn [AnyInteger AnyInteger -> AnyInteger]
-                             [Number Number -> Number])
-clojure.lang.Numbers/inc (Fn [AnyInteger -> AnyInteger]
-                                              [Number -> Number])
-clojure.lang.Numbers/dec (Fn [AnyInteger -> AnyInteger]
-                             [Number -> Number])
-clojure.lang.Numbers/minus (Fn 
-                             [AnyInteger -> AnyInteger]
-                             [Number -> Number]
+clojure.lang.Numbers/add (Fn [Long Long -> Long]
                              [AnyInteger AnyInteger -> AnyInteger]
+                             [(U Double AnyInteger) (U Double AnyInteger) -> Double]
                              [Number Number -> Number])
-clojure.lang.Numbers/multiply (Fn [AnyInteger AnyInteger -> AnyInteger]
+clojure.lang.Numbers/addP (Fn [AnyInteger AnyInteger -> AnyInteger]
+                              [(U Double AnyInteger) (U Double AnyInteger) -> Double]
+                              [Number Number -> Number])
+clojure.lang.Numbers/inc (Fn [Long -> Long]
+                             [AnyInteger -> AnyInteger]
+                             [Double -> Double]
+                             [Number -> Number])
+clojure.lang.Numbers/incP (Fn [AnyInteger -> AnyInteger]
+                              [Double -> Double]
+                              [Number -> Number])
+clojure.lang.Numbers/dec (Fn [Long -> Long]
+                             [AnyInteger -> AnyInteger]
+                             [Double -> Double]
+                             [Number -> Number])
+clojure.lang.Numbers/decP (Fn [AnyInteger -> AnyInteger]
+                              [Double -> Double]
+                              [Number -> Number])
+clojure.lang.Numbers/minus (Fn [Long -> Long]
+                               [AnyInteger -> AnyInteger]
+                               [Double -> Double]
+                               [Number -> Number]
+                               [Long Long -> Long]
+                               [AnyInteger AnyInteger -> AnyInteger]
+                               [(U Double AnyInteger) (U Double AnyInteger) -> Double]
+                               [Number Number -> Number])
+clojure.lang.Numbers/minusP (Fn [AnyInteger -> AnyInteger]
+                                [Double -> Double]
+                                [Number -> Number]
+                                [AnyInteger AnyInteger -> AnyInteger]
+                                [(U Double AnyInteger) (U Double AnyInteger) -> Double]
+                                [Number Number -> Number])
+clojure.lang.Numbers/multiply (Fn [Long Long -> Long]
+                                  [AnyInteger AnyInteger -> AnyInteger]
+                                  [(U Double AnyInteger) (U Double AnyInteger) -> Double]
                                   [Number Number -> Number])
+clojure.lang.Numbers/multiplyP (Fn [AnyInteger AnyInteger -> AnyInteger]
+                                   [(U Double AnyInteger) (U Double AnyInteger) -> Double]
+                                   [Number Number -> Number])
 clojure.lang.Numbers/divide [Number Number -> Number]
 
 clojure.lang.Numbers/max [Number Number * -> Number]
